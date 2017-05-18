@@ -15,7 +15,7 @@ const express = require("express")
     , session = require("express-session")
     , bodyParser = require("body-parser")
     , bcrypt = require("bcrypt-nodejs")
-    , pollka = require("./app/pollka");
+    , pollarbear = require("./app/pollarbear");
 
 const url = "mongodb://" + process.env.DBUSR + ":" + process.env.DBPW + "@" + process.env.DB_URI;
 const client = mongo.MongoClient;
@@ -93,7 +93,7 @@ client.connect(url, function(err, db) {
         console.log("Node app is running on port", app.get("port"));
     });
 
-    pollka(app, db, passport);
+    pollarbear(app, db, passport);
 
     // db.close();
 })
