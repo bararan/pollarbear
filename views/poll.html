@@ -1,0 +1,8 @@
+{{>head}}
+{{>topnavbar}}
+<div class="jumbotron">
+    <h1>{{poll.pollQuestion}}</h1>
+    {{#each poll.answers}}
+    <button class="btn btn-default">{{this}}</button>
+    {{/each}}
+</div>

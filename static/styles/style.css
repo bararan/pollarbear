@@ -1,0 +1,73 @@
+body {
+    font-family: 'Open Sans Condensed', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: stretch;
+    background: darkslategrey;
+    color: cornsilk;
+}
+
+.container {
+    margin-left: 0px;
+}
+
+#top-navbar a {  
+    color: cornsilk;
+    padding: 5px;
+    font-size: 32px;
+}
+
+a:hover, a:visited, a:active {
+    text-decoration: none;
+}
+
+#top-navbar {
+    background: darkslategrey;
+
+}
+
+#top-navbar a:hover {
+    background: lightslategrey;
+}
+
+.btn-poll {
+    background: none;
+    color: cornsilk;
+    border: 3px solid cornsilk;
+    margin: 2px;
+    font-size: 16px;
+}
+
+.btn-poll:hover {
+    background: cornsilk;
+    color: darkslategrey;
+}
+
+.jumbotron {
+    text-align: center;
+    width: 100%;
+    background: lightcoral;
+}
+
+#login-form {
+    max-width: 40%;
+}
+.hidden {
+    display: none;   
+}
+.form-control {
+    background: palegoldenrod;
+}
+
+.top-field {
+    border-radius: 5px 5px 0 0;
+}
+
+.mid-field {
+    border-radius: 0;
+}
+
+.bottom-field {
+    border-radius: 0 0 5px 5px;
+}

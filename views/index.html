@@ -1,0 +1,21 @@
+{{>head}}
+{{>topnavbar}}
+<body>
+    <div class="jumbotron">
+        <h1>Welcome to Pollar Bear</h1>
+        {{#if user}}
+            <div>Start creating polls now!</div>
+        {{ else}}
+            {{>login}} 
+        {{/if}}
+    </div>
+    <div class="container-fluid">
+        {{#if polls}}
+            <h3>Vote for one of the available polls</h3>
+            {{>polls}}
+        {{else}}
+            <h3>No polls created yet. Log in to create the first!</h3>
+        {{/if}}
+    </div>
+</body>
+

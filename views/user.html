@@ -1,0 +1,18 @@
+{{>head}}
+{{>topnavbar}}
+<div class="jumbotron">
+    <script src="../scripts/newpoll.js"></script>
+    <h1>Welcome {{ user }}!</h1>
+    {{#if user}}
+        <button id="show-form" class="btn btn-default" onclick="showForm()">Create a new poll</button>
+    {{/if}}
+    {{>newpoll}}
+</div>
+<div class="container-fluid">
+    <h3>Your polls</h3>
+    {{#if polls}}
+        {{>polls}}
+    {{else}}
+        <h4>You don't have any polls yet</h4>
+    {{/if}}
+</div>

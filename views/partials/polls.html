@@ -1,0 +1,9 @@
+<div class="container-fluid">
+    {{#each polls}}
+    <a href="/polls/{{this.slug}}">
+        <button class="btn btn-poll">
+            {{this.pollQuestion}}
+        </button>
+    </a>
+    {{/each}}
+</div>
