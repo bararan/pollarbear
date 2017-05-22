@@ -1,8 +1,21 @@
 {{>head}}
 {{>topnavbar}}
 <div class="jumbotron">
-    <h1>{{poll.pollQuestion}}</h1>
-    {{#each poll.answers}}
-    <button class="btn btn-default">{{this}}</button>
-    {{/each}}
+    <div id="poll-display">
+        <h2>{{poll.pollQuestion}}</h2>
+        <form method="POST">
+            <div id="answers" class="btn-group-vertical" data-toggle="buttons">
+                {{#each poll.answers}}
+                <label class="btn btn-default inputwrap" onclick="toggleActive(this)">
+                    <input type="radio" name="answer" class="hidden" value="{{this.answer}}" autocomplete="off">{{this.answer}}
+                </label>
+                {{/each}}
+            <input type="submit" class="btn btn-primary" formaction="/vote/{{poll.slug}}"/>
+            {{# if isOwner}}<div><button class="btn btn-warn">Add / modify answers</button></div>{{/if}}
+            </div>
+        </form>
+    </div>
 </div>
+<footer>
+    <script src="../scripts/openpoll.js"></script>
+</footer>

@@ -26,11 +26,9 @@ a:hover, a:visited, a:active {
     background: darkslategrey;
 
 }
-
 #top-navbar a:hover {
     background: lightslategrey;
 }
-
 .btn-poll {
     background: none;
     color: cornsilk;
@@ -38,18 +36,15 @@ a:hover, a:visited, a:active {
     margin: 2px;
     font-size: 16px;
 }
-
 .btn-poll:hover {
     background: cornsilk;
     color: darkslategrey;
 }
-
 .jumbotron {
     text-align: center;
     width: 100%;
     background: lightcoral;
 }
-
 #login-form {
     max-width: 40%;
 }
@@ -70,4 +65,12 @@ a:hover, a:visited, a:active {
 
 .bottom-field {
     border-radius: 0 0 5px 5px;
+}
+#poll-display {
+    max-width: 50%;
+}
+
+label {
+    display: block;
+    text-align: left;
 }

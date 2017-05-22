@@ -58,7 +58,8 @@ module.exports = function(app, db, passport) {
         let i = 1;
         let answers = [];
         while (req.body["option" + i]) {
-            answers.push(req.body["option" + i]);
+            let newAnswer = {"answer": req.body["option" + i], "count": 0};
+            answers.push(newAnswer);
             i ++;
         }
         const newPoll = {
@@ -71,13 +72,33 @@ module.exports = function(app, db, passport) {
         res.redirect("user");
     })
 
-    app.get("/polls/:pollQuestion", function(req, res) {
-        db.collection("polls").findOne({slug: req.params.pollQuestion}, {_id: 0},
+    app.post("/vote/:pollSlug", function(req, res) {
+        db.collection("polls").updateOne(
+            {
+                slug: req.params.pollSlug,
+                "answers.answer": req.body.answer
+            },
+            {
+                $inc: {"answers.$.count": 1}
+            }
+        ).then(function() {
+            res.redirect("/polls/" + req.params.pollSlug);
+        })
+    })
+
+    app.post("/updatePoll/:pollSlug", function(req, res) {
+        
+    })
+
+    app.get("/polls/:pollSlug", function(req, res) {
+        let user = false;
+        if (req.session.passport) { user = req.session.passport.user };
+        db.collection("polls").findOne({slug: req.params.pollSlug}, {_id: 0},
             function(err, poll) {
                 if (err) {
                     return res.render("error", {message: "ERROR: " + err});
                 }
-                return res.render("poll", {poll: poll});
+                return res.render("poll", {poll: poll, isOwner: poll.owner === user});
             })
     })
 
