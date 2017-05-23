@@ -7,3 +7,7 @@ let toggleActive = function(btn) {
     }
     btn.classList.add("active")
 }
+
+let openEdit = function() {
+    document.getElementById("edit-poll").classList.remove("hidden");
+}

@@ -1,4 +1,4 @@
-<div id="form-container" class="overlay hidden">
+<div id="poll-form" class="form-container hidden">
     <form id="new-poll" class="form-signin" method="POST" enctype="" >
         <input 
             type="text" 
@@ -12,7 +12,7 @@
         <input 
             type="text" 
             class="form-control mid-field" 
-            name="option1" 
+            name="answer0" 
             placeholder="Answer 1"  
             oninvalid="this.setCustomValidity('You must enter at least two possible answers')"
             oninput="setCustomValidity('')"
@@ -21,7 +21,7 @@
         <input 
             type="text" 
             class="form-control bottom-field" 
-            name="option2" 
+            name="answer1" 
             placeholder="Answer 2"
             oninvalid="this.setCustomValidity('You must enter at least two possible answers')"
             oninput="setCustomValidity('')"

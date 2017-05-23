@@ -18,6 +18,13 @@ body {
     font-size: 32px;
 }
 
+
+
+.input-group-addon {
+    background: palegoldenrod;
+    color: darkslategrey;
+}
+
 a:hover, a:visited, a:active {
     text-decoration: none;
 }
@@ -29,6 +36,12 @@ a:hover, a:visited, a:active {
 #top-navbar a:hover {
     background: lightslategrey;
 }
+
+.form-container {
+    width: 50%;
+    margin-left: 25%;
+}
+
 .btn-poll {
     background: none;
     color: cornsilk;
@@ -36,23 +49,30 @@ a:hover, a:visited, a:active {
     margin: 2px;
     font-size: 16px;
 }
+
 .btn-poll:hover {
     background: cornsilk;
     color: darkslategrey;
 }
+
 .jumbotron {
     text-align: center;
     width: 100%;
     background: lightcoral;
+    align-items: center;
 }
+
 #login-form {
     max-width: 40%;
 }
+
 .hidden {
     display: none;   
 }
+
 .form-control {
     background: palegoldenrod;
+    align-self: center;
 }
 
 .top-field {

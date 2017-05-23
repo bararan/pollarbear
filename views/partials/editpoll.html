@@ -1,0 +1,32 @@
+<div id="edit-poll" class="form-container hidden">
+    <form id="new-poll" class="form-signin" method="POST" enctype="" >
+        <input 
+            type="text" 
+            class="form-control top-field" 
+            name="poll-question" 
+            value="{{poll.pollQuestion}}" 
+            oninvalid="this.setCustomValidity('Please enter a valid poll question')"
+            oninput="setCustomValidity('')"
+            required>
+        </input>
+        {{#each poll.answers}}
+        <div class="input-group">
+            <input 
+                type="text" 
+                class="form-control mid-field" 
+                name="answer{{@index}}" 
+                placeholder="Type answer here"
+                value="{{this.answer}}"
+                oninvalid="this.setCustomValidity('You must enter at least two possible answers')"
+                oninput="setCustomValidity('')">
+            </input>
+            <input type="hidden" name="count{{@index}}" value={{this.count}}></input>
+            <span class="input-group-addon">
+                <a href="#" onclick="removeField({{@index}})"><span class="glyphicon glyphicon-remove"/></a>
+            </span>
+        </div>
+        {{/each}}
+        <input type="button" class="btn btn-success" id="add-field" value="Add More" onclick="addField()"></input>
+        <input type="submit" class="btn btn-warning" id="submit-poll" formaction="/edit/{{poll.slug}}" onclick="resetNum()"></input>
+    </form>
+</div>

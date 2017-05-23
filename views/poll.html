@@ -11,10 +11,11 @@
                 </label>
                 {{/each}}
             <input type="submit" class="btn btn-primary" formaction="/vote/{{poll.slug}}"/>
-            {{# if isOwner}}<div><button class="btn btn-warn">Add / modify answers</button></div>{{/if}}
             </div>
         </form>
+        {{# if isOwner}}<div><button class="btn btn-warn"onclick="openEdit()">Edit Poll</button></div>{{/if}}
     </div>
+    {{>editpoll}}
 </div>
 <footer>
     <script src="../scripts/openpoll.js"></script>

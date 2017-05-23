@@ -55,10 +55,11 @@ module.exports = function(app, db, passport) {
 
     app.post("/createpoll", function(req, res) {
         const user = req.session.passport.user;
-        let i = 1;
+        let i = 0;
         let answers = [];
-        while (req.body["option" + i]) {
-            let newAnswer = {"answer": req.body["option" + i], "count": 0};
+        console.log(req.body)
+        while (req.body["answer" + i]) {
+            let newAnswer = {"answer": req.body["answer" + i], "count": 0};
             answers.push(newAnswer);
             i ++;
         }
@@ -73,32 +74,103 @@ module.exports = function(app, db, passport) {
     })
 
     app.post("/vote/:pollSlug", function(req, res) {
-        db.collection("polls").updateOne(
+        db.collection("polls").findOneAndUpdate(
             {
                 slug: req.params.pollSlug,
                 "answers.answer": req.body.answer
             },
             {
                 $inc: {"answers.$.count": 1}
-            }
-        ).then(function() {
-            res.redirect("/polls/" + req.params.pollSlug);
+            },
+            {returnOriginal: false},
+            function(err, poll) {
+                let user = req.session.passport.user || false;
+                if (err) return res.render("error", {message: err});
+                res.render("poll", {poll: poll.value, user: user, isOwner: poll.value.owner === user})
+                // res.redirect("/polls/" + poll.value.slug);
         })
     })
 
-    app.post("/updatePoll/:pollSlug", function(req, res) {
-        
+    app.post("/edit/:pollSlug", function(req, res) {
+        let answers = [];
+        let i = 0;
+        while (req.body["answer" + i]) {
+            answers.push(
+                {
+                    answer: req.body["answer" + i],
+                    count: req.body["count" + i]
+                }
+            );
+            i++;
+        }
+        db.collection("polls").findOneAndUpdate(
+            {slug: req.params.pollSlug},
+            {$set: 
+                {
+                    pollQuestion: req.body["poll-question"],
+                    slug: slug(req.body["poll-question"]),
+                    answers: answers
+                }
+            },
+            {returnOriginal: false},
+            function(err, poll) {
+                if (err) return res.render("error", {message: err});
+                res.render("poll", {poll: poll.value})
+            }
+        )
     })
 
+    // app.post("/update/:pollSlug", function(req, res) {
+    //     db.collection("polls").findOne(
+    //         {slug: req.params.pollSlug},
+    //         {_id: 0, owner: 0, slug: 0, pollQuestion: 0},
+    //         function(err, answers) {
+    //             if (err) return res.render("err", {message: err});
+    //             let newAnswers = [];
+    //             let i = 1;
+    //             while (req.body["answer" + i]) {
+    //                 if (i > answers.length) {
+    //                     newAnswers.push(
+    //                         {
+    //                             answer: req.body["answer" + i],
+    //                             count: 0
+    //                         }
+    //                     )
+    //                 } else if (answers.find(function(ans) {return ans.answer === req.body["answer" + i]}) === undefined) {
+    //                     newAnswers.push(
+    //                         {
+    //                             answer: req.body["answer" + i],
+    //                             count: answers[i-1].count
+    //                         }
+    //                     )
+    //                 }
+    //                 i++;
+    //             }
+    //             db.collection("polls").findOneAndUpdate(
+    //                 {slug: req.params.pollSlug},
+    //                 {
+    //                     $set: {answers: newAnswers}
+    //                 },
+    //                 {returnOriginal: false},
+    //                 function(err, poll) {
+    //                     if (err) return res.render("error", {message: err})
+    //                     res.render("poll", {poll: poll.value})
+    //                 }
+    //             )
+    //         }
+    //     )       
+    // })
+
     app.get("/polls/:pollSlug", function(req, res) {
+        console.log(req.session)
         let user = false;
         if (req.session.passport) { user = req.session.passport.user };
-        db.collection("polls").findOne({slug: req.params.pollSlug}, {_id: 0},
+        db.collection("polls").findOne({slug: req.params.pollSlug},
             function(err, poll) {
                 if (err) {
                     return res.render("error", {message: "ERROR: " + err});
                 }
-                return res.render("poll", {poll: poll, isOwner: poll.owner === user});
+                return res.render("poll", {poll: poll, user: user, isOwner: poll.owner === user});
             })
     })
 
