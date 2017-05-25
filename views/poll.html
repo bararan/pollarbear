@@ -3,17 +3,19 @@
 <div class="jumbotron">
     <div id="poll-display">
         <h2>{{poll.pollQuestion}}</h2>
-        <form method="POST">
+        <form method="POST" onsubmit="return ensureChecked(this)" >
             <div id="answers" class="btn-group-vertical" data-toggle="buttons">
                 {{#each poll.answers}}
-                <label class="btn btn-default inputwrap" onclick="toggleActive(this)">
+                <label id="button{{@index}}" class="btn btn-poll inputwrap" onclick="toggleActive(this)">
                     <input type="radio" name="answer" class="hidden" value="{{this.answer}}" autocomplete="off">{{this.answer}}
                 </label>
                 {{/each}}
-            <input type="submit" class="btn btn-primary" formaction="/vote/{{poll.slug}}"/>
+            </div>
+            <div>
+                <input type="submit" class="btn btn-primary" formaction="/vote/{{poll.slug}}"/>
             </div>
         </form>
-        {{# if isOwner}}<div><button class="btn btn-warn"onclick="openEdit()">Edit Poll</button></div>{{/if}}
+        {{# if isOwner}}<div><button class="btn btn-warn" onclick="openEdit()">Edit Poll</button></div>{{/if}}
     </div>
     {{>editpoll}}
 </div>

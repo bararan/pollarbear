@@ -10,19 +10,16 @@ const showForm = function() {
 let numFields = 1;
 let addField = function() {
     numFields += 1;
-    let bottomField = document.getElementsByClassName("bottom-field")[0]
-    bottomField.classList.remove("bottom-field");
-    bottomField.classList.add("mid-field");
 
     let newGroup = document.createElement("div");
-    newGroup.className = "input-group bottom-field";
+    newGroup.className = "input-group answer-field";
     newGroup.id = "group" + numFields;
     
     let newAnswer = document.createElement("input");
     newAnswer.type = "text";
     newAnswer.name = "answer" + numFields;
     newAnswer.className = "form-control";
-    newAnswer.placeholder = "Answer " + numFields + " (Optional)";
+    newAnswer.placeholder = "Answer " + (numFields + 1) + " (Optional)";
 
     let removeBtn = document.createElement("span");
     removeBtn.className = "input-group-addon";
@@ -41,8 +38,5 @@ let removeField = function(id) {
         id++;
     }
     document.getElementById("group" + numFields).remove();
-    numFields -= 1;    
-    let lastField = document.getElementById("group" + numFields);
-    lastField.classList.remove("mid-field");
-    lastField.classList.add("bottom-field");
+    numFields -= 1;
 }

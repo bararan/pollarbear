@@ -1,17 +1,17 @@
 <div id="poll-form" class="form-container hidden">
-    <form id="new-poll" class="form-signin" method="POST" enctype="" >
+    <form id="new-poll" class="form" method="POST" enctype="" >
         <input 
             type="text" 
-            class="form-control top-field" 
-            name="poll-question" 
-            placeholder="Type your poll question here" 
+            class="form-control question-field"
+            name="poll-question"
+            placeholder="Type your poll question here"
             oninvalid="this.setCustomValidity('Please enter a valid poll question')"
             oninput="setCustomValidity('')"
             required>
         </input>
         <input 
             type="text" 
-            class="form-control mid-field" 
+            class="form-control answer-field" 
             name="answer0" 
             placeholder="Answer 1"  
             oninvalid="this.setCustomValidity('You must enter at least two possible answers')"
@@ -20,7 +20,7 @@
         </input>
         <input 
             type="text" 
-            class="form-control bottom-field" 
+            class="form-control answer-field" 
             name="answer1" 
             placeholder="Answer 2"
             oninvalid="this.setCustomValidity('You must enter at least two possible answers')"

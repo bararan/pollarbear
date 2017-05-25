@@ -2,7 +2,7 @@
 {{>topnavbar}}
 <div class="jumbotron">
     <script src="../scripts/newpoll.js"></script>
-    <h1>Welcome {{ user }}!</h1>
+    <h1>{{#if welcomeMessage}}{{welcomeMessage}}{{else}}Welcome {{user}}!{{/if}}</h1>
     {{#if user}}
         <button id="show-form" class="btn btn-default" onclick="showForm()">Create a new poll</button>
     {{/if}}

@@ -2,13 +2,17 @@
 "use strict";
 const slug = require("slug");
 
+const isLoggedIn = function(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect("/");
+}
+
 module.exports = function(app, db, passport) {
 
     app.get("/", function(req, res) {
-        let user = false;
-        if (req.session.passport) {
-            user = req.session.passport.user;
-        }
+        const user = req.user ? req.user.user : false;
         db.collection("polls").find({}, {_id: 0, pollQuestion: 1, slug: 1}).toArray(function(err, polls) {
             if(err) return console.error(err);
             res.render("index", {user: user, polls: polls});
@@ -19,6 +23,46 @@ module.exports = function(app, db, passport) {
         res.render("index");
     })
 
+    app.get("/polls/:pollSlug", function(req, res) {
+        const user = req.user ? req.user.user : false;
+        db.collection("polls").findOne({slug: req.params.pollSlug},
+            function(err, poll) {
+                if (err) {
+                    return res.render("error", {message: "ERROR: " + err});
+                }
+                return res.render("poll", {poll: poll, user: user, isOwner: poll.owner === user});
+            })
+    })
+
+    app.get("/user", function(req, res, next){
+        if (!req.user) {
+            return res.redirect("/");
+        }
+        let welcomeMessage = req.flash("welcomeMessage")
+        if (welcomeMessage.length === 0) welcomeMessage = false;
+        const userName = req.user.user;
+        db.collection("pollUsers").findOne({user: userName}, {_id: 0, pollQuestion: 1, slug: 1}, function(err, user) {
+            if (err) {
+                return res.render("error", {message: "ERROR: " + err});
+            }
+            if (user) {
+                let userPolls = [];
+                db.collection("polls").find({owner: userName})
+                    .toArray(function(err, polls) {
+                        if (err) {
+                            console.error(err);
+                            return res.render("error", {message: err});
+                        }
+                        userPolls = polls;
+                        res.render("user", {user: userName, polls: polls, welcomeMessage: welcomeMessage})
+                    })
+            } else {
+                console.warn("No user found with id " + user);
+                res.redirect("/")
+            }
+        })
+    })
+
     app.post("/login", function(req, res, next) {
         passport.authenticate("local-login", function(err, user, info){
             if (err) {
@@ -27,7 +71,7 @@ module.exports = function(app, db, passport) {
             if (!user) {
                 return res.render("index", {loginMessage: req.flash("loginMessage")});
             }
-            req.logIn(user, function(err){
+            req.login(user, function(err){
                 if (err) {
                     return res.render("index", {loginMessage: err});
                 }
@@ -44,7 +88,7 @@ module.exports = function(app, db, passport) {
             if (!user) {
                 return res.render("index", {loginMessage: req.flash("loginMessage")});
             }
-            req.logIn(user, function(err) {
+            req.login(user, function(err) {
                 if(err) {
                     return res.render("index", {loginMessage: err});
                 }
@@ -53,24 +97,31 @@ module.exports = function(app, db, passport) {
         })(req, res)
     });
 
-    app.post("/createpoll", function(req, res) {
-        const user = req.session.passport.user;
+    app.post("/createpoll", function(req, res, next) {
+        const user = req.user ? req.user.user : false;
         let i = 0;
         let answers = [];
-        console.log(req.body)
-        while (req.body["answer" + i]) {
-            let newAnswer = {"answer": req.body["answer" + i], "count": 0};
-            answers.push(newAnswer);
-            i ++;
-        }
-        const newPoll = {
-            owner: user,
-            pollQuestion: req.body["poll-question"],
-            slug: slug(req.body["poll-question"]),
-            answers: answers,
-        };
-        db.collection("polls").insertOne(newPoll);
-        res.redirect("user");
+        const pollSlug = slug(req.body["poll-question"], {lower: true});
+        db.collection("polls").findOne({slug: pollSlug}, function(err, poll) {
+            if (poll) {
+                return res.render("index", {loginMessage: "This Poll has already been created. Try a different question", user: user});
+            } else {
+                while (req.body["answer" + i]) {
+                    let newAnswer = {"answer": req.body["answer" + i], "count": 0};
+                    answers.push(newAnswer);
+                    i ++;
+                }
+                const newPoll = {
+                    owner: user,
+                    pollQuestion: req.body["poll-question"],
+                    slug: pollSlug,
+                    answers: answers,
+                };
+                db.collection("polls").insertOne(newPoll);
+                req.flash("welcomeMessage", "Poll '" + newPoll.pollQuestion + "' created!");
+                res.redirect("user");
+            }
+        })
     })
 
     app.post("/vote/:pollSlug", function(req, res) {
@@ -83,11 +134,10 @@ module.exports = function(app, db, passport) {
                 $inc: {"answers.$.count": 1}
             },
             {returnOriginal: false},
-            function(err, poll) {
-                let user = req.session.passport.user || false;
-                if (err) return res.render("error", {message: err});
-                res.render("poll", {poll: poll.value, user: user, isOwner: poll.value.owner === user})
-                // res.redirect("/polls/" + poll.value.slug);
+            function(err, poll) { 
+                const user = req.user ? req.user.user : false;
+                if (err) return res.render("error", {message: JSON.stringify(err)});
+                res.redirect("/polls/" + poll.value.slug);
         })
     })
 
@@ -98,7 +148,7 @@ module.exports = function(app, db, passport) {
             answers.push(
                 {
                     answer: req.body["answer" + i],
-                    count: req.body["count" + i]
+                    count: parseInt(req.body["count" + i])
                 }
             );
             i++;
@@ -108,96 +158,34 @@ module.exports = function(app, db, passport) {
             {$set: 
                 {
                     pollQuestion: req.body["poll-question"],
-                    slug: slug(req.body["poll-question"]),
+                    slug: slug(req.body["poll-question"], {lower: true}),
                     answers: answers
                 }
             },
             {returnOriginal: false},
             function(err, poll) {
                 if (err) return res.render("error", {message: err});
-                res.render("poll", {poll: poll.value})
+                res.redirect("/polls/" + req.params.pollSlug)
             }
         )
     })
 
-    // app.post("/update/:pollSlug", function(req, res) {
-    //     db.collection("polls").findOne(
-    //         {slug: req.params.pollSlug},
-    //         {_id: 0, owner: 0, slug: 0, pollQuestion: 0},
-    //         function(err, answers) {
-    //             if (err) return res.render("err", {message: err});
-    //             let newAnswers = [];
-    //             let i = 1;
-    //             while (req.body["answer" + i]) {
-    //                 if (i > answers.length) {
-    //                     newAnswers.push(
-    //                         {
-    //                             answer: req.body["answer" + i],
-    //                             count: 0
-    //                         }
-    //                     )
-    //                 } else if (answers.find(function(ans) {return ans.answer === req.body["answer" + i]}) === undefined) {
-    //                     newAnswers.push(
-    //                         {
-    //                             answer: req.body["answer" + i],
-    //                             count: answers[i-1].count
-    //                         }
-    //                     )
-    //                 }
-    //                 i++;
-    //             }
-    //             db.collection("polls").findOneAndUpdate(
-    //                 {slug: req.params.pollSlug},
-    //                 {
-    //                     $set: {answers: newAnswers}
-    //                 },
-    //                 {returnOriginal: false},
-    //                 function(err, poll) {
-    //                     if (err) return res.render("error", {message: err})
-    //                     res.render("poll", {poll: poll.value})
-    //                 }
-    //             )
-    //         }
-    //     )       
-    // })
-
-    app.get("/polls/:pollSlug", function(req, res) {
-        console.log(req.session)
-        let user = false;
-        if (req.session.passport) { user = req.session.passport.user };
-        db.collection("polls").findOne({slug: req.params.pollSlug},
+    app.post("/delete/:pollSlug", function(req, res) {
+        db.collection("polls").findOneAndDelete(
+            {slug: req.params.pollSlug},
             function(err, poll) {
-                if (err) {
-                    return res.render("error", {message: "ERROR: " + err});
+                if (err) {return res.render("error", {message: err});}
+                if (!req.user || poll.value.owner != req.user.user) {
+                    return res.render("error", {message: "You are not authorized to delete this poll"});
                 }
-                return res.render("poll", {poll: poll, user: user, isOwner: poll.owner === user});
-            })
+                req.flash("welcomeMessage", "Poll '" + poll.value.pollQuestion + "' successfully deleted.");
+                res.redirect("/user");
+            }
+        )
     })
 
-    app.get("/user", function(req, res){
-        if (!req.session.passport) {
-            return res.redirect("/");
-        }
-        const uid = req.session.passport.user || null;
-        db.collection("pollUsers").findOne({user: uid}, {_id: 0, pollQuestion: 1, slug: 1}, function(err, user) {
-            if (err) {
-                return res.render("error", {message: "ERROR: " + err});
-            }
-            if (user) {
-                let userPolls = [];
-                db.collection("polls").find({owner: uid})
-                    .toArray(function(err, polls) {
-                        if (err) {
-                            console.error(err);
-                            return res.render("error", {message: err});
-                        }
-                        userPolls = polls;
-                        res.render("user", {user: uid, polls: polls})
-                    })
-            } else {
-                console.warn("No user found with id " + user);
-                res.redirect("/")
-            }
-        })
+    app.get("/logout", function(req, res) {
+        req.logout();
+        res.redirect("/");
     })
 }

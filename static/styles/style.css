@@ -1,5 +1,5 @@
 body {
-    font-family: 'Open Sans Condensed', sans-serif;
+    font-family: 'Dosis', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -18,7 +18,13 @@ body {
     font-size: 32px;
 }
 
+.btn {
+    border-radius: 50px;
+}
 
+input {
+    border-radius: 50px !important;
+}
 
 .input-group-addon {
     background: palegoldenrod;
@@ -31,10 +37,14 @@ a:hover, a:visited, a:active {
 
 #top-navbar {
     background: darkslategrey;
-
 }
+
 #top-navbar a:hover {
     background: lightslategrey;
+}
+
+#logout {
+    float: right;
 }
 
 .form-container {
@@ -43,16 +53,22 @@ a:hover, a:visited, a:active {
 }
 
 .btn-poll {
-    background: none;
-    color: cornsilk;
-    border: 3px solid cornsilk;
-    margin: 2px;
+    background: palegoldenrod;
+    color: lightseagreen;
+    border-radius: 50px !important;
+    border: 3px solid lightseagreen;
+    margin-top: 1px !important;
     font-size: 16px;
 }
 
 .btn-poll:hover {
-    background: cornsilk;
-    color: darkslategrey;
+    background: lightseagreen !important;
+    color: palegoldenrod !important;
+}
+
+.btn-poll.active {
+    background: lightseagreen !important;
+    color: palegoldenrod !important;
 }
 
 .jumbotron {
@@ -71,26 +87,35 @@ a:hover, a:visited, a:active {
 }
 
 .form-control {
-    background: palegoldenrod;
+    background: none;
     align-self: center;
+    border: none;
 }
 
-.top-field {
-    border-radius: 5px 5px 0 0;
-}
-
-.mid-field {
-    border-radius: 0;
-}
-
-.bottom-field {
-    border-radius: 0 0 5px 5px;
-}
 #poll-display {
     max-width: 50%;
 }
 
-label {
-    display: block;
-    text-align: left;
+.question-field {
+    border-radius: 50px;
+    border: 5px solid darkseagreen;
+    background: palegoldenrod;
+    color: darkseagreen;
+    font-size: 20px;
+    height:auto;
+}
+
+.answer-field {
+    border-radius: 50px;
+    border: 2px solid lightseagreen;
+    margin-top: 2px;
+    background: palegoldenrod;
+    color: lightseagreen;
+}
+
+.input-group-addon {
+    background: none;
+    border: none;
+    color: lightseagreen;
+    opacity: 0.6;
 }

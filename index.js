@@ -6,12 +6,11 @@ const express = require("express")
     , path = require("path")
     , hbs = require("hbs")
     , passport = require("passport")
-    , GitHubStrategy = require('passport-github2').Strategy
     , LocalStrategy = require("passport-local").Strategy
     , multer = require("multer")
     , upload = multer()
     , morgan = require("morgan")
-    , flash    = require("connect-flash")
+    , flash    = require("connect-flash-plus")
     , session = require("express-session")
     , bodyParser = require("body-parser")
     , bcrypt = require("bcrypt-nodejs")
@@ -24,6 +23,25 @@ client.connect(url, function(err, db) {
     if (err) {
         throw err;
     }
+    
+    let app = express();
+    app.use(express.static(path.join(__dirname, "static")));
+    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(flash());
+    app.use(session({
+        secret: "myDirtyLittleSecret",
+        resave: true,
+        saveUninitialized: true
+    }));
+    app.use(upload.array());
+    app.use(passport.initialize());
+    app.use(passport.session());
+    app.use(morgan("dev"));
+    app.set("port", (process.env.PORT || 5000));
+    app.set("view engine", "html");
+    app.set("views", path.join(__dirname, "views"));
+    hbs.registerPartials(path.join(__dirname, "views/partials"));
+    app.engine("html", hbs.__express);
 
     passport.use("local-login", new LocalStrategy(
         {passReqToCallback: true},
@@ -68,25 +86,6 @@ client.connect(url, function(err, db) {
             done(null, user);
         });
     });
-    
-    let app = express();
-    app.use(express.static(path.join(__dirname, "static")));
-    app.use(upload.array());
-    app.use(passport.initialize());
-    app.use(bodyParser.urlencoded({extended: true}));
-    app.use(passport.session());
-    app.use(session({
-        secret: "myDirtyLittleSecret",
-        resave: true,
-        saveUninitialized: true
-    }));
-    app.use(flash());
-    app.use(morgan("dev"));
-    app.set("port", (process.env.PORT || 5000));
-    app.set("view engine", "html");
-    app.set("views", path.join(__dirname, "views"));
-    hbs.registerPartials(path.join(__dirname, "views/partials"));
-    app.engine("html", hbs.__express);
 
 
     app.listen(app.get("port"), function() {
