@@ -66,6 +66,7 @@ a:hover, a:visited, a:active {
 .btn-submit {
     font-weight: bold;
     background: darkslategray;
+    border: 3px solid darkslategrey;
     color: lightseagreen;
 }
 
@@ -92,11 +93,13 @@ a:hover, a:visited, a:active {
 
 .btn-delete {
     background: darkseagreen;
+    border: 3px solid darkseagreen;
     color: palegoldenrod;
 }
 
 .btn-delete:hover {
     background: coral;
+    border: 3px solid coral;
     color: palegoldenrod;
 }
 

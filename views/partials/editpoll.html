@@ -28,7 +28,7 @@
         </div>
         {{/each}}
         <input type="button" class="btn btn-create" id="add-field" value="Add More" onclick="addField()"></input>
-        <input type="submit" class="btn btn-submit" id="submit-poll" formaction="/edit/{{poll.slug}}"></input>
+        <input type="submit" class="btn btn-submit" id="submit-poll" value="Submit Changes" formaction="/edit/{{poll.slug}}"></input>
         <input type="submit" class="btn btn-delete" id="delete-poll" value="Delete Poll" formaction="/delete/{{poll.slug}}"></input>
     </form>
 </div>

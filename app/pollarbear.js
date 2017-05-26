@@ -25,12 +25,14 @@ module.exports = function(app, db, passport) {
 
     app.get("/polls/:pollSlug", function(req, res) {
         const user = req.user ? req.user.user : false;
+        let message = req.flash("message");
+        if (message.length === 0) message = false;
         db.collection("polls").findOne({slug: req.params.pollSlug},
             function(err, poll) {
                 if (err) {
                     return res.render("error", {message: "ERROR: " + err});
                 }
-                return res.render("poll", {poll: poll, user: user, isOwner: poll.owner === user});
+                return res.render("poll", {poll: poll, user: user, isOwner: poll.owner === user, message: message});
             })
     })
 
@@ -137,6 +139,7 @@ module.exports = function(app, db, passport) {
             function(err, poll) { 
                 const user = req.user ? req.user.user : false;
                 if (err) return res.render("error", {message: JSON.stringify(err)});
+                req.flash("message", "Thanks for voting.")
                 res.redirect("/polls/" + poll.value.slug);
         })
     })

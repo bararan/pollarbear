@@ -2,6 +2,7 @@
 {{>topnavbar}}
 <div class="jumbotron">
     <div id="poll-display" class="container-fluid">
+        {{#if message}}<h3>{{message}}</h3>{{/if}}
         <h2>{{poll.pollQuestion}}</h2>
         <form method="POST" onsubmit="return ensureChecked(this)" >
             <div id="answers" class="btn-group-vertical" data-toggle="buttons">
@@ -10,7 +11,7 @@
                     <input type="radio" name="answer" class="hidden" value="{{this.answer}}" autocomplete="off">{{this.answer}}
                 </label>
                 {{/each}}
-                <input type="submit" class="btn btn-submit" formaction="/vote/{{poll.slug}}"/>
+                <input type="submit" class="btn btn-submit" value="Submit" formaction="/vote/{{poll.slug}}"/>
                 {{# if isOwner}}
                 <button type="button" class="btn btn-create" onclick="openEdit()">Edit Poll</button>
                 {{/if}}
