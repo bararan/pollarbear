@@ -47,13 +47,15 @@ let removeField = function(id) {
     if (id < 2 && numFields < 3) {
         return alert("You need at least two answers for your poll!")
     }
+    numFields -=1;
     while (id < numFields) {
-        let nextValue = document.getElementsByName("answer" + (id + 1))[0].value; 
-        document.getElementsByName("answer" + id)[0].value = nextValue;
+        let nextAnswer = document.getElementsByName("answer" + (id + 1))[0].value;
+        let nextCount = document.getElementsByName("count" + (id + 1))[0].value;
+        document.getElementsByName("answer" + id)[0].value = nextAnswer;
+        document.getElementsByName("count" + id)[0].value = nextCount
         id++;
     }
     document.getElementById("group" + numFields).remove();
-    numFields -= 1;
 }
 
 let ensureChecked = function(form) {

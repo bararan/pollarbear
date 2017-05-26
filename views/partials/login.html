@@ -2,7 +2,7 @@
     {{#if loginMessage}}
     <h3>{{loginMessage}}</h3>
     {{else}}
-    Please log in to manage your polls or create new ones.
+    <h3>Please log in to manage your polls or create new ones</h3>
     {{/if}}
 </div>
 <div class="container-fluid" id="login-form">
@@ -23,9 +23,9 @@
             required>
         </input>
         <div class="row">
-            <input class="btn btn-success" type="submit" value="Log in" formaction="/login"></input>
+            <input class="btn btn-submit" type="submit" value="Log in" formaction="/login"></input>
             or
-            <button class="btn btn-warning" type="submit" formaction="/signup">Sign up</button>
+            <button class="btn btn-create" type="submit" formaction="/signup">Sign up</button>
         </div>
     </form>
 </div>

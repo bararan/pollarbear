@@ -11,7 +11,7 @@
             required>
         </input>
         {{#each poll.answers}}
-        <div class="input-group answer-field">
+        <div class="input-group answer-field" id="group{{@index}}">
             <input 
                 type="text" 
                 class="form-control" 
@@ -27,8 +27,8 @@
             </span>
         </div>
         {{/each}}
-        <input type="button" class="btn btn-success" id="add-field" value="Add More" onclick="addField()"></input>
-        <input type="submit" class="btn btn-warning" id="submit-poll" formaction="/edit/{{poll.slug}}"></input>
-        <input type="submit" class="btn btn-danger" id="delete-poll" value="Delete Poll" formaction="/delete/{{poll.slug}}"></input>
+        <input type="button" class="btn btn-create" id="add-field" value="Add More" onclick="addField()"></input>
+        <input type="submit" class="btn btn-submit" id="submit-poll" formaction="/edit/{{poll.slug}}"></input>
+        <input type="submit" class="btn btn-delete" id="delete-poll" value="Delete Poll" formaction="/delete/{{poll.slug}}"></input>
     </form>
 </div>

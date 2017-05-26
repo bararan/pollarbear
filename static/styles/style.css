@@ -5,57 +5,54 @@ body {
     align-items: center;
     justify-content: stretch;
     background: darkslategrey;
-    color: cornsilk;
+    color: paleturquoise;
 }
 
-.container {
-    margin-left: 0px;
+#top-navbar {
+    background: darkslategrey;
 }
-
 #top-navbar a {  
-    color: cornsilk;
+    color: lightseagreen;
     padding: 5px;
     font-size: 32px;
 }
-
-.btn {
-    border-radius: 50px;
+#top-navbar a:hover {
+    color: paleturquoise;
 }
+#logout {
+    float: right;
+}
+
 
 input {
     border-radius: 50px !important;
 }
 
-.input-group-addon {
-    background: palegoldenrod;
-    color: darkslategrey;
+h3 {
+    color: lightseagreen;
 }
 
 a:hover, a:visited, a:active {
     text-decoration: none;
 }
 
-#top-navbar {
-    background: darkslategrey;
-}
-
-#top-navbar a:hover {
-    background: lightslategrey;
-}
-
-#logout {
-    float: right;
+.container-fluid {
+    width: 100%;
 }
 
 .form-container {
     width: 50%;
-    margin-left: 25%;
+}
+
+.btn {
+    border-radius: 50px !important;
+    font-weight: bold;
+    margin-top: 2px !important;
 }
 
 .btn-poll {
     background: palegoldenrod;
     color: lightseagreen;
-    border-radius: 50px !important;
     border: 3px solid lightseagreen;
     margin-top: 1px !important;
     font-size: 16px;
@@ -66,15 +63,50 @@ a:hover, a:visited, a:active {
     color: palegoldenrod !important;
 }
 
+.btn-submit {
+    font-weight: bold;
+    background: darkslategray;
+    color: lightseagreen;
+}
+
+.btn-submit:hover {
+    color: palegoldenrod;
+    opacity: 0.9;
+}
+
 .btn-poll.active {
     background: lightseagreen !important;
     color: palegoldenrod !important;
 }
 
+.btn-create {
+    background: none;
+    border: 3px solid darkslategrey;
+    color: darkslategrey;
+}
+
+.btn-create:hover {
+    background: darkslategrey;
+    color: palegoldenrod;
+}
+
+.btn-delete {
+    background: darkseagreen;
+    color: palegoldenrod;
+}
+
+.btn-delete:hover {
+    background: coral;
+    color: palegoldenrod;
+}
+
 .jumbotron {
     text-align: center;
     width: 100%;
-    background: lightcoral;
+    background: palegoldenrod;
+    color: darkslategrey;
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
@@ -90,6 +122,11 @@ a:hover, a:visited, a:active {
     background: none;
     align-self: center;
     border: none;
+    color: lightseagreen;
+}
+
+.form-control:focus {
+    box-shadow: none;
 }
 
 #poll-display {
@@ -105,6 +142,10 @@ a:hover, a:visited, a:active {
     height:auto;
 }
 
+.question-field:focus {
+    border: 5px solid darkseagreen;
+}
+
 .answer-field {
     border-radius: 50px;
     border: 2px solid lightseagreen;
@@ -113,9 +154,16 @@ a:hover, a:visited, a:active {
     color: lightseagreen;
 }
 
+.answer-field:focus {
+    border: 2px solid lightseagreen;
+}
+
 .input-group-addon {
     background: none;
     border: none;
-    color: lightseagreen;
     opacity: 0.6;
+}
+
+.input-group-addon a {
+    color: lightseagreen;
 }

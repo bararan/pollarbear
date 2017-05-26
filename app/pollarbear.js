@@ -165,7 +165,7 @@ module.exports = function(app, db, passport) {
             {returnOriginal: false},
             function(err, poll) {
                 if (err) return res.render("error", {message: err});
-                res.redirect("/polls/" + req.params.pollSlug)
+                res.redirect("/polls/" + poll.value.slug)
             }
         )
     })
