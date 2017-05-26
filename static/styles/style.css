@@ -41,8 +41,21 @@ a:hover, a:visited, a:active {
 }
 
 .form-container {
-    width: 50%;
+    max-width: 50%;
 }
+
+#poll-chart {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+canvas {
+    max-width: 30%;
+    align-self: center;
+}
+
+/* buttons */
 
 .btn {
     border-radius: 50px !important;
@@ -130,10 +143,6 @@ a:hover, a:visited, a:active {
 
 .form-control:focus {
     box-shadow: none;
-}
-
-#poll-display {
-    max-width: 50%;
 }
 
 .question-field {

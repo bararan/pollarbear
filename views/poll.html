@@ -3,22 +3,28 @@
 <div class="jumbotron">
     <div id="poll-display" class="container-fluid">
         {{#if message}}<h3>{{message}}</h3>{{/if}}
-        <h2>{{poll.pollQuestion}}</h2>
-        <form method="POST" onsubmit="return ensureChecked(this)" >
-            <div id="answers" class="btn-group-vertical" data-toggle="buttons">
-                {{#each poll.answers}}
-                <label id="button{{@index}}" class="btn btn-poll inputwrap" onclick="toggleActive(this)">
-                    <input type="radio" name="answer" class="hidden" value="{{this.answer}}" autocomplete="off">{{this.answer}}
-                </label>
-                {{/each}}
-                <input type="submit" class="btn btn-submit" value="Submit" formaction="/vote/{{poll.slug}}"/>
-                {{# if isOwner}}
-                <button type="button" class="btn btn-create" onclick="openEdit()">Edit Poll</button>
-                {{/if}}
+        <div id="poll-chart">
+            <div class="form-container">
+            <h2>{{poll.pollQuestion}}</h2>
+                <form method="POST" onsubmit="return ensureChecked(this)" >
+                    <div id="answers" class="btn-group-vertical" data-toggle="buttons">
+                        {{#each poll.answers}}
+                        <label id="button{{@index}}" class="btn btn-poll inputwrap" onclick="toggleActive(this)">
+                            <input type="radio" name="answer" class="hidden" value="{{this.answer}}" autocomplete="off">{{this.answer}}
+                        </label>
+                        <input type="hidden" class="count" value={{this.count}}></input>
+                        {{/each}}
+                        <input type="submit" class="btn btn-submit" value="Submit" formaction="/vote/{{poll.slug}}"/>
+                        {{# if isOwner}}
+                        <button type="button" class="btn btn-create" onclick="openEdit()">Edit Poll</button>
+                        {{/if}}
+                    </div>
+                </form>
             </div>
-        </form>
+            <canvas id="results-display"></canvas>
+        </div>
     </div>
-    {{>editpoll}}
+    {{>editpoll}}   
 </div>
 <footer>
     <script src="../scripts/openpoll.js"></script>

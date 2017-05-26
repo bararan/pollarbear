@@ -65,6 +65,10 @@ module.exports = function(app, db, passport) {
         })
     })
 
+    app.get("*", function(req, res) {
+        res.redirect("/");
+    })
+
     app.post("/login", function(req, res, next) {
         passport.authenticate("local-login", function(err, user, info){
             if (err) {
