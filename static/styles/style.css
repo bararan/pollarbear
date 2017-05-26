@@ -41,7 +41,7 @@ a:hover, a:visited, a:active {
 }
 
 .form-container {
-    max-width: 50%;
+    width: 50%;
 }
 
 #poll-chart {

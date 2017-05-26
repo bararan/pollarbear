@@ -62,8 +62,6 @@ let openEdit = function() {
 }
 
 let addField = function() {
-    numFields += 1;
-
     let newGroup = document.createElement("div");
     newGroup.className = "input-group answer-field";
     newGroup.id = "group" + numFields;
@@ -74,14 +72,22 @@ let addField = function() {
     newAnswer.className = "form-control";
     newAnswer.placeholder = "New answer";
 
+    let newCount = document.createElement("input");
+    newCount.type = "hidden";
+    newCount.name = "count" + numFields;
+    newCount.value = "0";
+
     let removeBtn = document.createElement("span");
     removeBtn.className = "input-group-addon";
     removeBtn.innerHTML = '<a href="#" onclick="removeField(' + numFields + ')"><span class="glyphicon glyphicon-remove"/></a>';
 
     newGroup.appendChild(newAnswer);
+    newGroup.appendChild(newCount);
     newGroup.appendChild(removeBtn);
 
     document.getElementById("poll-form").insertBefore(newGroup, document.getElementById("add-field"));
+
+    numFields +=1;
 }
 
 let removeField = function(id) {

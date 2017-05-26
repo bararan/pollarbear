@@ -7,10 +7,10 @@ const express = require("express")
     , hbs = require("hbs")
     , passport = require("passport")
     , LocalStrategy = require("passport-local").Strategy
-    , multer = require("multer")
-    , upload = multer()
+    // , multer = require("multer")
+    // , upload = multer()
     , morgan = require("morgan")
-    , flash    = require("connect-flash-plus")
+    , flash    = require("connect-flash")
     , session = require("express-session")
     , bodyParser = require("body-parser")
     , bcrypt = require("bcrypt-nodejs")
@@ -33,10 +33,10 @@ client.connect(url, function(err, db) {
         resave: true,
         saveUninitialized: true
     }));
-    app.use(upload.array());
+    // app.use(upload.array());
     app.use(passport.initialize());
     app.use(passport.session());
-    app.use(morgan("dev"));
+    app.use(morgan("tiny"));
     app.set("port", (process.env.PORT || 5000));
     app.set("view engine", "html");
     app.set("views", path.join(__dirname, "views"));
@@ -93,6 +93,4 @@ client.connect(url, function(err, db) {
     });
 
     pollarbear(app, db, passport);
-
-    // db.close();
 })

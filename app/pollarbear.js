@@ -172,6 +172,7 @@ module.exports = function(app, db, passport) {
             {returnOriginal: false},
             function(err, poll) {
                 if (err) return res.render("error", {message: err});
+                req.flash("message", "Changes have been successfully saved.");
                 res.redirect("/polls/" + poll.value.slug)
             }
         )
