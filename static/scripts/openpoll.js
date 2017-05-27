@@ -2,11 +2,11 @@
 
 let numFields = document.getElementsByClassName("input-group").length;
 
-let palette = ['indigo', 'orange', 'chartreuse',
-               'magenta', 'gold', 'cyan',
-               'hotpink', 'yellow', 'lightskyblue',
-               'coral', 'lawngreen', 'violet'
-                ];
+// let palette = ['indigo', 'orange', 'chartreuse',
+//                'magenta', 'gold', 'cyan',
+//                'hotpink', 'yellow', 'lightskyblue',
+//                'coral', 'lawngreen', 'violet'
+//                ];
 
 window.onload = function() {
     let firstBtn = document.getElementsByClassName("inputwrap")[0];
@@ -31,15 +31,10 @@ let createChart = function() {
     for (let i=0; i<ansFields.length; i++) {
         answers.push(ansFields[i].value);
         votes.push(parseInt(countFields[i].value));
-        if (i < palette.length) {
-            colours.push(palette[i]);
-        } else {
-            // generate a random rgb color if we exhaust colors in the palette:
-            let r = Math.floor(Math.random() * 256);
-            let g = Math.floor(Math.random() * 256);
-            let b = Math.floor(Math.random() * 256);
-            colours.push("rgba(" + r + "," + g + "," + b + ")");
-        }
+        let r = Math.floor(Math.random() * 256);
+        let g = Math.floor(Math.random() * 256);
+        let b = Math.floor(Math.random() * 256);
+        colours.push("rgb(" + r + "," + g + "," + b + ")");
     }
     let ctx = document.getElementById("results-display").getContext("2d");
     var myChart = new Chart(ctx, {
