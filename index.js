@@ -5,13 +5,12 @@ const express = require("express")
     , mongo = require("mongodb")
     , path = require("path")
     , hbs = require("hbs")
-    , passport = require("passport")
-    , LocalStrategy = require("passport-local").Strategy
-    // , multer = require("multer")
-    // , upload = multer()
     , morgan = require("morgan")
     , flash    = require("connect-flash")
     , session = require("express-session")
+    , MongoStore = require("connect-mongo")(session)
+    , passport = require("passport")
+    , LocalStrategy = require("passport-local").Strategy
     , bodyParser = require("body-parser")
     , bcrypt = require("bcrypt-nodejs")
     , pollarbear = require("./app/pollarbear");
@@ -26,22 +25,27 @@ client.connect(url, function(err, db) {
     
     let app = express();
     app.use(express.static(path.join(__dirname, "static")));
-    app.use(bodyParser.urlencoded({extended: true}));
-    app.use(flash());
-    app.use(session({
-        secret: "myDirtyLittleSecret",
-        resave: true,
-        saveUninitialized: true
-    }));
-    // app.use(upload.array());
-    app.use(passport.initialize());
-    app.use(passport.session());
     app.use(morgan("tiny"));
     app.set("port", (process.env.PORT || 5000));
     app.set("view engine", "html");
     app.set("views", path.join(__dirname, "views"));
     hbs.registerPartials(path.join(__dirname, "views/partials"));
     app.engine("html", hbs.__express);
+
+    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(flash());
+    app.use(session({
+        secret: "myDirtyLittleSecret"
+        , resave: false
+        , saveUninitialized: false
+        , store: new MongoStore(
+                    {
+                        db: db
+                        , collection: "pollSessions"
+                    }
+                )
+        , cookie: { maxAge: 60 * 60 * 1000 }
+    }));
 
     passport.use("local-login", new LocalStrategy(
         {passReqToCallback: true},
@@ -87,7 +91,9 @@ client.connect(url, function(err, db) {
         });
     });
 
-
+    app.use(passport.initialize());
+    app.use(passport.session());
+    
     app.listen(app.get("port"), function() {
         console.log("Node app is running on port", app.get("port"));
     });

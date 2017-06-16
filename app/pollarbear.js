@@ -6,13 +6,13 @@ const isLoggedIn = function(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.redirect("/");
+    res.redirect("/login");
 }
 
 module.exports = function(app, db, passport) {
 
     app.get("/", function(req, res) {
-        const user = req.user ? req.user.user : false;
+        const user = req.isAuthenticated() ? req.user.user : false;
         db.collection("polls").find({}, {_id: 0, pollQuestion: 1, slug: 1}).toArray(function(err, polls) {
             if(err) return console.error(err);
             res.render("index", {user: user, polls: polls});
@@ -24,7 +24,7 @@ module.exports = function(app, db, passport) {
     })
 
     app.get("/polls/:pollSlug", function(req, res) {
-        const user = req.user ? req.user.user : false;
+        const user = req.isAuthenticated() ? req.user.user : false;
         let message = req.flash("message");
         if (message.length === 0) message = false;
         db.collection("polls").findOne({slug: req.params.pollSlug},
@@ -36,10 +36,7 @@ module.exports = function(app, db, passport) {
             })
     })
 
-    app.get("/user", function(req, res, next){
-        if (!req.user) {
-            return res.redirect("/");
-        }
+    app.get("/user", isLoggedIn, function(req, res){
         let welcomeMessage = req.flash("welcomeMessage")
         if (welcomeMessage.length === 0) welcomeMessage = false;
         const userName = req.user.user;
@@ -65,11 +62,12 @@ module.exports = function(app, db, passport) {
         })
     })
 
-    app.get("*", function(req, res) {
+    app.get("/logout", function(req, res) {
+        req.logout();
         res.redirect("/");
     })
 
-    app.post("/login", function(req, res, next) {
+    app.post("/login", function(req, res) {
         passport.authenticate("local-login", function(err, user, info){
             if (err) {
                 return res.render("index", {loginMessage: err});
@@ -83,7 +81,7 @@ module.exports = function(app, db, passport) {
                 }
                 return res.redirect("user");
             })
-        })(req, res, next)
+        })(req, res)
     });
 
     app.post("/signup", function(req, res) {
@@ -103,8 +101,8 @@ module.exports = function(app, db, passport) {
         })(req, res)
     });
 
-    app.post("/createpoll", function(req, res, next) {
-        const user = req.user ? req.user.user : false;
+    app.post("/createpoll", function(req, res) {
+        const user = req.user.user;
         let i = 0;
         let answers = [];
         const pollSlug = slug(req.body["poll-question"], {lower: true});
@@ -140,8 +138,7 @@ module.exports = function(app, db, passport) {
                 $inc: {"answers.$.count": 1}
             },
             {returnOriginal: false},
-            function(err, poll) { 
-                const user = req.user ? req.user.user : false;
+            function(err, poll) {
                 if (err) return res.render("error", {message: JSON.stringify(err)});
                 req.flash("message", "Thanks for voting.")
                 res.redirect("/polls/" + poll.value.slug);
@@ -183,17 +180,12 @@ module.exports = function(app, db, passport) {
             {slug: req.params.pollSlug},
             function(err, poll) {
                 if (err) {return res.render("error", {message: err});}
-                if (!req.user || poll.value.owner != req.user.user) {
+                if (poll.value.owner != req.user.user) {
                     return res.render("error", {message: "You are not authorized to delete this poll"});
                 }
                 req.flash("welcomeMessage", "Poll '" + poll.value.pollQuestion + "' successfully deleted.");
                 res.redirect("/user");
             }
         )
-    })
-
-    app.get("/logout", function(req, res) {
-        req.logout();
-        res.redirect("/");
     })
 }
